@@ -6,43 +6,38 @@ const types = `
         agent: String!
     }
 
-    type UserHistory {
+    type AccountHistory {
         action: String!
         createdIn: Float!
         netInfo: NetInfo
     }
     
-    type Security {
+    type AccountSecurity {
         password: String
         twoFactor: Boolean
-        token: Token
     }
 
-    type User {
+    type Account {
         id: ID!
         type: String!
         email: String!
-        name: String
-        photo: String
-        security: Security
-        history: [UserHistory]
+
+        security: AccountSecurity
+        history: [AccountHistory]
+
         deletedIn: Float
         createdIn: Float
     }
 
-    
 
-    input UserInput {
+    input AccountInput {
         id: ID!
-        type: String
-        email: String
-        name: String
-        photo: String
+        deletedIn: Float
     }
     
     type Secret {
         code: Int!
-        user: User
+        account: Account
         value: String
     }
 
@@ -53,23 +48,17 @@ const types = `
     }
 
     input ValidadeInput {
-        email: String!
+        account: String!
         token: String!
         type: String!
         netInfo: NetInfoInput!
-    }
-
-
-    type UserPagination {
-        count: Int!
-        items: [User]!
     }
 
 `;
 
 const queries = `
     type Query {
-        userSearch(filter: [FilterInput!]!, limit: Int, skip: KeyInput, sort: SortInput!): UserPagination!
+        accountGet(id: ID!): Account
     }
 `;
 
@@ -78,7 +67,7 @@ const mutations = `
         tokenRequest(email: String!): Boolean!
         tokenValidate(validate: ValidadeInput!): Secret!
 
-        userPut(user: UserInput!): User
+        accountPut(account: AccountInput!): Account
     }
 `;
 

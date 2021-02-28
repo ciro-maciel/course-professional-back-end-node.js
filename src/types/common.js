@@ -74,7 +74,7 @@ const queries = `
 
 const mutations = `
   type Mutation {
-    infrastructureCreate: Boolean!
+    configure: Boolean!
   }
 `;
 

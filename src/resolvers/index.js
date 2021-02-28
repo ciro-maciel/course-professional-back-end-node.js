@@ -1,5 +1,5 @@
 const { mergeResolvers } = require("merge-graphql-schemas");
 
-const resolvers = [require("./common"), require("./user")];
+const resolvers = [require("./common"), require("./account")];
 
 module.exports = mergeResolvers(resolvers);

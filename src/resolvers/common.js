@@ -1,9 +1,10 @@
-const { UnitOfWork, databases } = require("../persistence");
-const { authentication } = require("../management");
+const {
+  backEnd: {
+    persistence: { UnitOfWork, databases },
+  },
+} = require("@ciro-maciel/utility");
 
-const MeiliSearch = require("meilisearch");
-
-const { TABLE_NAME, INDEX_URL, INDEX_KEY, STAGE } = process.env;
+const { TABLE_NAME } = process.env;
 
 const uow = new UnitOfWork(new databases.Dynamo(), TABLE_NAME);
 
@@ -26,7 +27,7 @@ module.exports = {
     },
   },
   Mutation: {
-    infrastructureCreate: async (_) => {
+    configure: async (_) => {
       try {
         // https://vendors.paddle.com/subscriptions/plans
         // id === Plan ID

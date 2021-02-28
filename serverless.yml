@@ -1,24 +1,13 @@
-service: workspace-graphql
+service: monitor-graphql
 
 plugins:
   - serverless-dynamodb-local
   - serverless-dotenv-plugin
-  - serverless-plugin-ifelse
   - serverless-offline
 
 custom:
   dotenv:
     basePath: config/
-  # serverlessIfElse:
-  #   - If: '"${self:provider.stage}" == "test"'
-  #     Exclude:
-  #       - functions.index.provisionedConcurrency
-  #       - functions.index.concurrencyAutoscaling
-
-  #   - If: '"${self:provider.stage}" == "prod"'
-  #     Exclude:
-  #       - functions.index.provisionedConcurrency
-  #       - functions.index.concurrencyAutoscaling
   dynamodb:
     stages:
       - ${self:provider.stage}
@@ -33,7 +22,7 @@ provider:
   runtime: nodejs10.x
   region: us-east-1
   environment:
-    TABLE_NAME: workspace-${self:provider.stage}
+    TABLE_NAME: monitor-${self:provider.stage}
     STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: "Allow"
@@ -54,8 +43,6 @@ functions:
   index:
     memorySize: 256
     handler: src/index.handler
-    # provisionedConcurrency: 1
-    # concurrencyAutoscaling: true
     events:
       - http: ANY /
       - http: "ANY {proxy+}"
@@ -77,12 +64,12 @@ resources:
             AttributeType: S
           - AttributeName: createdIn
             AttributeType: N
+        # https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-gsi.html
         GlobalSecondaryIndexes:
           - IndexName: GSI_TYPE
             KeySchema:
               - AttributeName: type
                 KeyType: HASH
-              # https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-gsi.html
               - AttributeName: createdIn
                 KeyType: RANGE
             Projection:
@@ -111,7 +98,7 @@ package:
     - node_modules/**/.jshintignore
     - node_modules/**/license.txt
     - node_modules/**/tsconfig.json
-    - node_modules/**/workspace.json
+    - node_modules/**/monitor.json
     - node_modules/**/*.md
     - node_modules/**/*.ts
     - node_modules/**/*.markdown

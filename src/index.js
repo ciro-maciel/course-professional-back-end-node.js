@@ -1,5 +1,10 @@
 const { ApolloServer } = require("apollo-server-lambda");
-const { Authorization, jwtAuthorizationStrategy } = require("./management");
+
+const {
+  backEnd: {
+    management: { Authorization, jwtAuthorizationStrategy },
+  },
+} = require("@ciro-maciel/utility");
 
 const types = require("./types");
 const resolvers = require("./resolvers");
