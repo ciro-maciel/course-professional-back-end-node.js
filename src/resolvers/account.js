@@ -75,7 +75,7 @@ module.exports = {
             {
               type: "S",
               field: "email",
-              value: email,
+              value: validate.email,
             },
           ],
         });
