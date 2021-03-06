@@ -48,7 +48,7 @@ const types = `
     }
 
     input ValidadeInput {
-        account: String!
+        email: String!
         token: String!
         type: String!
         netInfo: NetInfoInput!

@@ -64,11 +64,25 @@ module.exports = {
     },
     tokenValidate: async (_, { validate }) => {
       try {
-        let account = await uow
-          .repository()
-          .findByKey({ id: validate.account });
+        let account = await uow.repository().filter({
+          indexName: "GSI_TYPE",
+          filter: [
+            {
+              type: "S",
+              field: "type",
+              value: "account",
+            },
+            {
+              type: "S",
+              field: "email",
+              value: email,
+            },
+          ],
+        });
 
         if (account) {
+          account = account.items[0];
+
           if (!account.deletedIn) {
             if (account.security.token.value === validate.token) {
               account.security.token = null;
