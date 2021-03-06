@@ -4,7 +4,7 @@ module.exports = {
   create: (email) => {
     return {
       id: utility.math.guid(16, 16),
-      type: "user",
+      type: "account",
       email,
       security: {
         twoFactor: false,
