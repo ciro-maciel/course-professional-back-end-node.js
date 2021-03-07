@@ -1,8 +1,8 @@
-const utility = require("@ciro-maciel/utility/dist/utility.cjs");
+const utility = require("@ciro-maciel/utility");
 const {
   management: { authentication },
   persistence: { UnitOfWork, databases },
-} = require("@ciro-maciel/utility/dist/backend");
+} = require("@ciro-maciel/utility/clients/backend");
 
 const jwt = require("jsonwebtoken");
 

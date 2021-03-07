@@ -1,6 +1,6 @@
 const {
   persistence: { UnitOfWork, databases },
-} = require("@ciro-maciel/utility/dist/backend");
+} = require("@ciro-maciel/utility/clients/backend");
 
 const { TABLE_NAME } = process.env;
 
