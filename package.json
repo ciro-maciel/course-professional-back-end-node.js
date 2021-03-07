@@ -16,7 +16,7 @@
     "graphql:deploy:prod": "serverless deploy --stage prod --verbose"
   },
   "dependencies": {
-    "@ciro-maciel/utility": "^2.2.6",
+    "@ciro-maciel/utility": "^2.2.10",
     "@graphql-tools/merge": "^6.2.10",
     "apollo-server-lambda": "^2.21.0",
     "aws-sdk": "^2.596.0",

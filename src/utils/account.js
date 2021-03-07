@@ -1,4 +1,4 @@
-const { utility } = require("@ciro-maciel/utility");
+const utility = require("@ciro-maciel/utility/dist/utility.cjs");
 
 module.exports = {
   create: (email) => {
