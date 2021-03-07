@@ -26,8 +26,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: AKIAT6H6ASAMTEJYGVU7
-          aws-secret-access-key: 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
+          aws-access-key-id: AKIAT6H6ASAMSAJB6JON
+          aws-secret-access-key: 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
           aws-region: us-east-1
 
       - name: Install Packages
