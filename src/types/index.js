@@ -1,5 +1,5 @@
-const { mergeTypes } = require("merge-graphql-schemas");
+const { mergeTypeDefs } = require("@graphql-tools/merge");
 
 const types = [require("./common"), require("./account")];
 
-module.exports = mergeTypes(types, { all: true });
+module.exports = mergeTypeDefs(types);
