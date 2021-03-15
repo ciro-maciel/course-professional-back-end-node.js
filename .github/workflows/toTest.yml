@@ -1,0 +1,37 @@
+name: deploy to Test
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  worker:
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Get code
+        uses: actions/checkout@v2
+
+      # https://docs.github.com/en/free-pro-team@latest/actions/guides/caching-dependencies-to-speed-up-workflows
+      - name: Cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Install Packages
+        run: npm i
+
+      - name: Deploy to
+        run: npm run graphql:deploy:test

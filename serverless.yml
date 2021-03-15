@@ -1,0 +1,120 @@
+service: template-graphql
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  dotenv:
+    basePath: config/
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: 4040
+      migrate: true
+      convertEmptyValues: true
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  runtime: nodejs10.x
+  region: us-east-1
+  environment:
+    TABLE_NAME: template-graphql-${self:provider.stage}
+    STAGE: ${self:provider.stage}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
+
+functions:
+  index:
+    memorySize: 256
+    handler: src/index.handler
+    events:
+      - http: ANY /
+      - http: "ANY {proxy+}"
+
+resources:
+  Resources:
+    data:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: type
+            AttributeType: S
+          - AttributeName: createdIn
+            AttributeType: N
+        # https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-gsi.html
+        GlobalSecondaryIndexes:
+          - IndexName: GSI_TYPE
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: createdIn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+
+package:
+  include:
+    - node_modules/**/node_modules/**/*.js
+    - node_modules/**/node_modules/**/package.json
+  exclude:
+    - .vscode/**
+    - .gitignore
+    - .env
+    - gulpfile.js
+    - package-lock.json
+    # aws-sdk is included in Lambda
+    - node_modules/**/aws-sdk/**
+    # aws-sdk is included in Lambda
+    - node_modules/**/bin/**
+    - node_modules/**/.editorconfig
+    - node_modules/**/.eslintrc.js
+    - node_modules/**/.travis.yml
+    - node_modules/**/.eslintrc
+    - node_modules/**/.jscsrc
+    - node_modules/**/.jshintignore
+    - node_modules/**/license.txt
+    - node_modules/**/tsconfig.json
+    - node_modules/**/monitor.json
+    - node_modules/**/*.md
+    - node_modules/**/*.ts
+    - node_modules/**/*.markdown
+    - node_modules/**/.npmignore
+    - node_modules/**/.jshintrc
+    - node_modules/**/LICENSE
+    - node_modules/**/LICENCE
+    - node_modules/**/license
+    - node_modules/**/Makefile
+    - node_modules/**/yarn.lock
+    - node_modules/**/package-lock.json
+    - node_modules/**/*.map
+    - node_modules/**/test/**
+    - node_modules/**/.vscode/**
+    - node_modules/**/tests/**
+    - node_modules/**/benchmark/**
+    - node_modules/**/scripts/**
+    - node_modules/**/__tests__/**
+    - node_modules/**/*.min.js
