@@ -7,7 +7,7 @@ on:
 jobs:
   worker:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Get code
         uses: actions/checkout@v2
