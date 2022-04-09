@@ -13,7 +13,7 @@ const sendEmail = (to, subject, message) => {
     const charset = "UTF-8";
 
     var params = {
-      Source: `Ciro from ${APP_NAME} <me@ciro-maciel.me>`,
+      Source: `RiLi Team from ${APP_NAME} <team@rili.be>`,
       Destination: {
         ToAddresses: [to],
       },

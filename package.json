@@ -2,12 +2,12 @@
   "name": "template-graphql",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://ciro-maciel.me/",
+  "homepage": "https://rili.be/",
   "license": "CC-BY-NC-SA-4.0",
   "private": false,
   "author": {
     "name": "Ciro Cesar Maciel",
-    "email": "me@ciro-maciel.me"
+    "email": "ciro-maciel@rili.be"
   },
   "scripts": {
     "graphql:develop:run": "serverless --stage test offline start",
