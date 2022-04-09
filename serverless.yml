@@ -19,7 +19,7 @@ custom:
 provider:
   name: aws
   stage: ${opt:stage, 'dev'}
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   region: us-east-1
   environment:
     TABLE_NAME: template-graphql-${self:provider.stage}
