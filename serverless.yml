@@ -22,7 +22,7 @@ provider:
   runtime: nodejs14.x
   region: us-east-1
   environment:
-    TABLE_NAME: unique-graphql-${self:provider.stage}
+    TABLE_NAME: unique-${self:provider.stage}
     STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: "Allow"

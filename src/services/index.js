@@ -1,4 +1,4 @@
-const email = require("./account");
+const email = require("./email");
 
 module.exports = {
   email,
