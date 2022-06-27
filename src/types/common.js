@@ -8,11 +8,13 @@ const types = `
 
   type Plan {
     id: ID!
-    title: ID!
-    description: String!
+    title: String!
+    description: String
+    externalId: String
+    pack: String
     offer: Float!
     amount: Float!
-    unit: String!
+    unit: String
     createdIn: Float!
   }
 
@@ -46,10 +48,9 @@ const inputs = `
   }
 
   input SortInput {
-    field: String!
     dir: SortDir!
   }
-
+  
   input FilterInput {
     type: FilterType
     field: String!

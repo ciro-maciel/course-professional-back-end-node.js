@@ -1,6 +1,6 @@
 const {
   persistence: { UnitOfWork, databases },
-} = require("@ciro-maciel/utility/clients/backend");
+} = require("@rili-saas/utility/clients/backend");
 
 const { TABLE_NAME } = process.env;
 
@@ -13,7 +13,6 @@ module.exports = {
         indexName: "GSI_TYPE",
         filter: [
           {
-            type: "S",
             field: "type",
             value: "plan",
           },
@@ -27,44 +26,78 @@ module.exports = {
   Mutation: {
     configure: async (_) => {
       try {
-        // https://vendors.paddle.com/subscriptions/plans
-        // id === Plan ID
         const plans = [
           {
-            id: "001001",
+            id: "e32e680bcc86928c",
             type: "plan",
-            title: "common:1b52cdb.d5178c0.d",
-            description: "common:1b52cdb.d5178c0.v",
+            title: "Free",
+            description: JSON.stringify([
+              { name: "Pages", value: "5" },
+              { name: "Pages Customization" },
+              { name: "Google Analytics" },
+              { name: "Facebook pixel" },
+            ]),
+            externalId: '',
             amount: 0,
             offer: 0,
             unit: "month",
             createdIn: new Date().getTime(),
           },
           {
-            id: "639025",
+            id: "4f149cf0940ca64f",
             type: "plan",
-            title: "common:1b52cdb.d0ac567.d",
-            description: "common:1b52cdb.d0ac567.v",
+            title: "Maker",
+            description: JSON.stringify([
+              { name: "Pages", value: "10" },
+              { name: "Pages Customization" },
+              { name: "Get found easier with SEO" },
+              { name: "Google Analytics" },
+              { name: "Facebook pixel" },
+              { name: "Custom Domain" },
+              { name: "Security with SSL" },
+            ]),
+            externalId: '',
             amount: 4,
             offer: 1.99,
             unit: "month",
             createdIn: new Date().getTime(),
           },
           {
-            id: "639026",
+            id: "f19c01cdb16fe50a",
             type: "plan",
-            title: "common:1b52cdb.3c37a84.d",
-            description: "common:1b52cdb.3c37a84.v",
+            title: "Startup",
+            description: JSON.stringify([
+              { name: "Pages", value: "20" },
+              { name: "Pages Customization" },
+              { name: "Get found easier with SEO" },
+              { name: "Google Analytics" },
+              { name: "Facebook pixel" },
+              { name: "Custom Domain" },
+              { name: "Remove Pages Branding" },
+              { name: "Security with SSL" },
+            ]),
+            externalId: '',
             amount: 10,
             offer: 4.99,
             unit: "month",
             createdIn: new Date().getTime(),
           },
           {
-            id: "639027",
+            id: "d45dabefa6b0eaad",
             type: "plan",
-            title: "common:1b52cdb.67e713d.d",
-            description: "common:1b52cdb.67e713d.v",
+            title: "Business",
+            description: JSON.stringify([
+              { name: "Pages", value: "30" },
+              { name: "Pages Customization" },
+              { name: "Get found easier with SEO" },
+              { name: "Google Analytics" },
+              { name: "Facebook pixel" },
+              { name: "Custom Domain" },
+              { name: "Remove Pages Branding" },
+              { name: "Security with SSL" },
+              { name: "Priority Support" },
+            ]),
+            externalId: '',
             amount: 22,
             offer: 10.99,
             unit: "month",

@@ -6,8 +6,8 @@ const ses = new SES({
   region: "us-east-1",
 });
 
-const sendEmail = (to, subject, message) => {
-  return new Promise((resolve, reject) => {
+const send = async (to, subject, textMessage, htmlMessage) => {
+  return new Promise(async (resolve, reject) => {
     //https://dev.to/adnanrahic/building-a-serverless-contact-form-with-aws-lambda-and-aws-ses-4jm0
     // https://docs.aws.amazon.com/ses/latest/DeveloperGuide/examples-send-using-sdk.html
     const charset = "UTF-8";
@@ -23,22 +23,18 @@ const sendEmail = (to, subject, message) => {
           Charset: charset,
         },
         Body: {
-          Text: {
-            Data: message,
-            Charset: charset,
-          },
-          // Html: {
-          //   Data: body_html,
-          //   Charset: charset
-          // }
+          ...(textMessage && { Text: { Data: textMessage, Charset: charset } }),
+          ...(htmlMessage && { Html: { Data: htmlMessage, Charset: charset } }),
         },
       },
     };
 
-    ses.sendEmail(params, function (err, data) {
-      return err ? reject(err.message) : resolve(data.MessageId);
-    });
+    try {
+      return !!(await ses.sendEmail(params).promise());
+    } catch (error) {
+      return false;
+    }
   });
 };
 
-module.exports = { sendEmail };
+module.exports = { send };

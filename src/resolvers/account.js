@@ -1,21 +1,19 @@
-const utility = require("@ciro-maciel/utility");
+const utility = require("@rili-saas/utility");
 const {
   management: { authentication },
   persistence: { UnitOfWork, databases },
-} = require("@ciro-maciel/utility/clients/backend");
+} = require("@rili-saas/utility/clients/backend");
 
+const Identicon = require("identicon.js");
 const jwt = require("jsonwebtoken");
 
-const { sendEmail } = require("../services");
-const utils = require("../utils");
+const { email } = require("../services");
 
-const { TABLE_NAME, SECRET, APP_NAME } = process.env;
-
-const uow = new UnitOfWork(new databases.Dynamo(), TABLE_NAME);
+const uow = new UnitOfWork(new databases.Dynamo(), process.env.TABLE_NAME);
 
 module.exports = {
   Query: {
-    accountGet: authentication.validate(async (_, { id }) => {
+    accountById: authentication.validate(async (_, { id }) => {
       return await uow.repository().findByKey({ id });
     }),
   },
@@ -26,17 +24,57 @@ module.exports = {
           indexName: "GSI_TYPE",
           filter: [
             {
-              type: "S",
               field: "type",
               value: "account",
             },
             {
-              type: "S",
               field: "email",
               value: email,
             },
           ],
         });
+
+        if (account.items.length === 0) {
+
+          const plans = await uow.repository().filter({
+            indexName: "GSI_TYPE",
+            filter: [
+              {
+                type: "S",
+                field: "type",
+                value: "plan",
+              },
+            ],
+            sort: { field: "amount", dir: "asc" },
+          });
+
+          account = {
+            id: utility.math.guid(16, 16),
+            type: "account",
+            email,
+            photo: `data:image/svg+xml;base64,${new Identicon(
+              utility.math.guid(16, 16),
+              {
+                size: 256,
+                format: "svg",
+              }
+            ).toString()}`,
+            security: JSON.stringify({
+              twoFactor: false,
+            }),
+            history: JSON.stringify([]),
+            financial: JSON.stringify({
+              plan: plans.items[0],
+              dueAt: new Date().getTime(),
+              payments: []
+            }),
+            deletedIn: null,
+            createdIn: new Date().getTime(),
+          };
+
+        } else {
+          account = account.items[0];
+        }
 
         const token = {
           value: utility.math.guid(16, 16),
@@ -44,14 +82,18 @@ module.exports = {
           createdIn: new Date().getTime(),
         };
 
-        account =
-          account.count !== 0 ? account.items[0] : utils.account.create(email);
+        account.history = JSON.parse(account.history);
+        account.history.push(token);
+        account.history = JSON.stringify(account.history);
 
+        account.security = JSON.parse(account.security);
         account.security.token = token;
+        account.security = JSON.stringify(account.security);
 
-        sendEmail(
+
+        email.send(
           email,
-          `Seu Código de Login Temporário ${APP_NAME}`,
+          `${process.env.APP_NAME} - Your Temporary Login Code`,
           `You code is ${token.value}`
         );
 
@@ -66,37 +108,40 @@ module.exports = {
           indexName: "GSI_TYPE",
           filter: [
             {
-              type: "S",
               field: "type",
               value: "account",
             },
             {
-              type: "S",
               field: "email",
               value: validate.email,
             },
           ],
         });
 
-        if (account) {
+        if (account.items.length > 0) {
           account = account.items[0];
 
           if (!account.deletedIn) {
+            account.security = JSON.parse(account.security);
+
             if (account.security.token.value === validate.token) {
               account.security.token = null;
+              account.security = JSON.stringify(account.security);
 
+              account.history = JSON.parse(account.history);
               account.history.push({
                 action: validate.type,
                 createdIn: new Date().getTime(),
-                netInfo: validate.netInfo,
+                netInfo: JSON.parse(validate.netInfo),
               });
+              account.history = JSON.stringify(account.history);
 
               await uow.repository().put(account);
 
               delete account.history;
               delete account.security;
 
-              const token = jwt.sign({ id: account.id }, SECRET, {
+              const token = jwt.sign({ id: account.id }, process.env.JWT_SECRET, {
                 expiresIn: "920h",
               });
 
@@ -123,11 +168,12 @@ module.exports = {
         throw error;
       }
     },
-    accountPut: authentication.validate(async (_, { account: accountPut }) => {
+    accountDisable: authentication.validate(async (_, { id }) => {
       try {
-        let account = await uow.repository().findByKey({ id: accountPut.id });
+        let account = await uow.repository().findByKey({ id });
+        account.deletedIn = new Date().getTime();
 
-        return !!(await uow.repository().put({ ...account, ...accountPut }));
+        return !!(await uow.repository().put(account));
       } catch (error) {
         throw error;
       }

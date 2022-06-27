@@ -1,7 +1,7 @@
 {
-  "name": "template-graphql",
+  "name": "unique-graphql",
   "version": "1.0.0",
-  "description": "",
+  "description": "SaaS starter kit, foundation for your business",
   "homepage": "https://rili.be/",
   "license": "CC-BY-NC-SA-4.0",
   "private": false,
@@ -16,7 +16,7 @@
     "graphql:deploy:prod": "serverless deploy --stage prod --verbose"
   },
   "dependencies": {
-    "@ciro-maciel/utility": "^2.2.14",
+    "@rili-saas/utility": "^2.8.2",
     "@graphql-tools/merge": "^6.2.10",
     "apollo-server-lambda": "^2.21.0",
     "aws-sdk": "^2.858.0",
@@ -24,9 +24,9 @@
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "serverless": "^2.28.7",
+    "serverless": "^3.19.0",
     "serverless-dotenv-plugin": "^3.8.1",
     "serverless-dynamodb-local": "^0.2.39",
-    "serverless-offline": "^6.8.0"
+    "serverless-offline": "^8.8.0"
   }
 }
